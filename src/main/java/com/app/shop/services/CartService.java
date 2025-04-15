@@ -59,6 +59,9 @@ public class CartService {
 	 * @return
 	 */
 	public Map<String, Cart> getList() {
+		if (cartStorage.isEmpty()) {
+			throw new CartException(ResponseMessages.CART_LIST_EMPTY);
+		}
 		return cartStorage;
 	}
 
@@ -85,20 +88,36 @@ public class CartService {
 
 		for (Product product : products) {
 			if (productIds.contains(product.getId())) {
-				throw new CartException(ResponseMessages.PRODUCT_ID_DUPLICATED + product.getId());
+				throw new CartException(product.getId() + ResponseMessages.PRODUCT_ID_DUPLICATED);
 			}
 
 			if (product.getId() <= 0) {
-				throw new CartException(ResponseMessages.PRODUCT_ID_INVALID);
+				throw new CartException(product.getId() + ResponseMessages.PRODUCT_ID_INVALID);
 			}
 
 			if (product.getAmount() <= 0) {
-				throw new CartException(ResponseMessages.PRODUCT_AMOUNT_INVALID);
+				throw new CartException(product.getAmount() + ResponseMessages.PRODUCT_AMOUNT_INVALID);
 			}
 			productIds.add(product.getId());
 			cart.getProducts().add(product);
 		}
 
+	}
+
+	public void removeProduct(String cartId, int productId) {
+		Cart cart = getCart(cartId);
+		if (cart == null) {
+			throw new CartException(ResponseMessages.CART_NOT_FOUND);
+		}
+
+		Product productToRemove = cart.getProducts().stream().filter(product -> product.getId() == productId)
+				.findFirst().orElse(null);
+
+		if (productToRemove == null) {
+			throw new CartException(ResponseMessages.PRODUCT_NOT_FOUND);
+		}
+
+		cart.getProducts().remove(productToRemove);
 	}
 
 	/**

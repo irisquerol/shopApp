@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,7 +32,7 @@ public class Controller {
 	@PostMapping("/new")
 	public ResponseEntity<String> createCart() {
 		Cart cart = cartService.createCart();
-		return ResponseEntity.ok(ResponseMessages.CART_CREATED + cart.getId());
+		return ResponseEntity.status(HttpStatus.CREATED).body(ResponseMessages.CART_CREATED + cart.getId());
 	}
 
 	/**
@@ -39,16 +40,16 @@ public class Controller {
 	 * @return
 	 */
 	@GetMapping("/{id}")
-	public Cart getCart(@PathVariable String id) {
-		return cartService.getCart(id);
+	public ResponseEntity<Cart> getCart(@PathVariable String id) {
+		return ResponseEntity.ok(cartService.getCart(id));
 	}
 
 	/**
 	 * @return
 	 */
 	@GetMapping("/list")
-	public Map<String, Cart> getCartList() {
-		return cartService.getList();
+	public ResponseEntity<Map<String, Cart>> getCartList() {
+		return ResponseEntity.ok(cartService.getList());
 	}
 
 	/**
@@ -56,20 +57,32 @@ public class Controller {
 	 * @return
 	 */
 	@DeleteMapping("/{id}")
-	public ResponseEntity<?> deleteCart(@PathVariable String id) {
+	public ResponseEntity<String> deleteCart(@PathVariable String id) {
 		cartService.deleteCart(id);
 		return ResponseEntity.ok(id + ResponseMessages.CART_DELETED);
 	}
 
 	/**
-	 * @param id
-	 * @param products
+	 * @param cartId
+	 * @param productId
 	 * @return
 	 */
-	@PostMapping("/{id}/addProduct")
-	public ResponseEntity<?> addProducts(@PathVariable String id, @RequestBody List<Product> products) {
+	@PostMapping("/{cartId}/{productId}")
+	public ResponseEntity<String> removeProduct(@PathVariable String cartId, @PathVariable int productId) {
+		cartService.removeProduct(cartId, productId);
+		return ResponseEntity.ok(productId + ResponseMessages.PRODUCT_REMOVED);
+
+	}
+
+	/**
+	 * @param cartId
+	 * @param productId
+	 * @return
+	 */
+	@PostMapping("/{id}/addProducts")
+	public ResponseEntity<String> addProducts(@PathVariable String id, @RequestBody List<Product> products) {
 		cartService.addProducts(id, products);
-		return ResponseEntity.ok().build();
+		return ResponseEntity.status(HttpStatus.CREATED).body(ResponseMessages.PRODUCT_ADDED);
 
 	}
 

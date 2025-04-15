@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.app.shop.exceptions.CartException;
 import com.app.shop.model.Cart;
 import com.app.shop.model.Product;
 import com.app.shop.services.CartService;
@@ -26,43 +25,52 @@ public class Controller {
 	@Autowired
 	private CartService cartService;
 
+	/**
+	 * @return
+	 */
 	@PostMapping("/new")
 	public ResponseEntity<String> createCart() {
 		Cart cart = cartService.createCart();
-		if (cart == null) {
-			throw new CartException(ResponseMessages.CART_NOT_CREATED);
-		}
 		return ResponseEntity.ok(ResponseMessages.CART_CREATED + cart.getId());
 	}
 
+	/**
+	 * @param id
+	 * @return
+	 */
 	@GetMapping("/{id}")
 	public Cart getCart(@PathVariable String id) {
-		Cart cart = cartService.getCart(id);
-		if (cart == null) {
-			throw new CartException(ResponseMessages.CART_NOT_FOUND);
-		}
-		return cart;
+		return cartService.getCart(id);
 	}
 
+	/**
+	 * @return
+	 */
 	@GetMapping("/list")
 	public Map<String, Cart> getCartList() {
 		return cartService.getList();
 	}
 
+	/**
+	 * @param id
+	 * @return
+	 */
 	@DeleteMapping("/{id}")
 	public ResponseEntity<?> deleteCart(@PathVariable String id) {
-		Cart cart = cartService.getCart(id);
-		if (cart == null) {
-			throw new CartException(ResponseMessages.CART_NOT_FOUND);
-		}
 		cartService.deleteCart(id);
 		return ResponseEntity.ok(id + ResponseMessages.CART_DELETED);
 	}
 
+	/**
+	 * @param id
+	 * @param products
+	 * @return
+	 */
 	@PostMapping("/{id}/addProduct")
 	public ResponseEntity<?> addProducts(@PathVariable String id, @RequestBody List<Product> products) {
 		cartService.addProducts(id, products);
 		return ResponseEntity.ok().build();
+
 	}
 
 }

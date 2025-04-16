@@ -2,7 +2,6 @@ package com.app.shop.services;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,14 +19,13 @@ import com.app.shop.view.ResponseMessages;
 public class CartService {
 
 	private final Map<String, Cart> cartStorage = new LinkedHashMap<>();
-	private final Set<Integer> productIds = new HashSet<>();
 
 	private int cartCounter;
 
 	/*
-	 * createCart
+	 * Creates a new Cart
 	 * 
-	 * @return new Cart
+	 * @return Cart
 	 */
 	public Cart createCart() {
 		if (cartStorage.isEmpty()) {
@@ -41,10 +39,10 @@ public class CartService {
 	}
 
 	/**
-	 * getCart
+	 * Gets the Cart by its ID
 	 * 
-	 * @param id
-	 * @return the cart with the id
+	 * @param id of the cart
+	 * @return the info of the cart with the id
 	 */
 	public Cart getCart(String id) {
 		Cart cart = cartStorage.get(id);
@@ -56,7 +54,9 @@ public class CartService {
 	}
 
 	/**
-	 * @return
+	 * Gets all the carts with all their info
+	 * 
+	 * @return Map<String, Cart>
 	 */
 	public Map<String, Cart> getList() {
 		if (cartStorage.isEmpty()) {
@@ -66,28 +66,33 @@ public class CartService {
 	}
 
 	/**
+	 * Removes the cart by its ID Uses {@link #getCart(String)} to validate the cart exists
+	 * 
+	 * @param id of the cart
+	 * @throws CartException if validation fails
 	 * @param id
 	 */
 	public void deleteCart(String id) {
-		Cart cart = getCart(id);
-		if (cart == null) {
-			throw new CartException(ResponseMessages.CART_NOT_FOUND);
-		}
+		getCart(id);
 		cartStorage.remove(id);
 	}
 
 	/**
-	 * @param id
-	 * @param products
+	 * Adds a list of products to the indicated cart after validation
+	 * 
+	 * @param cartId
+	 * @param products list (at least 1)
+	 * @throws CartException if validation fails
 	 */
 	public void addProducts(String cartId, List<Product> products) {
 		Cart cart = getCart(cartId);
-		if (cart == null) {
-			throw new CartException(ResponseMessages.CART_NOT_FOUND);
-		}
 
+		Set<Integer> newProductIds = cart.getProductIds();
+		List<Product> newProducts = cart.getProducts();
+
+		// Validation of each new register of product
 		for (Product product : products) {
-			if (productIds.contains(product.getId())) {
+			if (newProductIds.contains(product.getId())) {
 				throw new CartException(product.getId() + ResponseMessages.PRODUCT_ID_DUPLICATED);
 			}
 
@@ -98,26 +103,38 @@ public class CartService {
 			if (product.getAmount() <= 0) {
 				throw new CartException(product.getAmount() + ResponseMessages.PRODUCT_AMOUNT_INVALID);
 			}
-			productIds.add(product.getId());
-			cart.getProducts().add(product);
+			newProductIds.add(product.getId());
+			newProducts.add(product);
+
 		}
+		// After validation, adds all the products and ID to the cart and keeps the cart active
+		cart.setProductIds(newProductIds);
+		cart.setProducts(newProducts);
+		cart.setStartTime(LocalDateTime.now());
 
 	}
 
+	/**
+	 * Removes a product by its ID and cart ID
+	 * 
+	 * @param cartId
+	 * @param productId
+	 * @throws CartException if cart or product validation fails
+	 */
 	public void removeProduct(String cartId, int productId) {
 		Cart cart = getCart(cartId);
-		if (cart == null) {
-			throw new CartException(ResponseMessages.CART_NOT_FOUND);
-		}
 
 		Product productToRemove = cart.getProducts().stream().filter(product -> product.getId() == productId)
 				.findFirst().orElse(null);
-
+		// validation product exist
 		if (productToRemove == null) {
 			throw new CartException(ResponseMessages.PRODUCT_NOT_FOUND);
 		}
 
+		// removes the product and keeps the cart active
+		cart.getProductIds().remove(productId);
 		cart.getProducts().remove(productToRemove);
+		cart.setStartTime(LocalDateTime.now());
 	}
 
 	/**

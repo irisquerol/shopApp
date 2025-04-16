@@ -17,7 +17,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import com.app.shop.exceptions.CartException;
 import com.app.shop.model.Cart;
 import com.app.shop.model.Product;
 import com.app.shop.services.CartService;

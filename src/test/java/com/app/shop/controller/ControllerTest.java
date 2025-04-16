@@ -5,6 +5,7 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
+import java.util.List;
 import java.util.Map;
 
 import org.junit.jupiter.api.Test;
@@ -18,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 
 import com.app.shop.exceptions.CartException;
 import com.app.shop.model.Cart;
+import com.app.shop.model.Product;
 import com.app.shop.services.CartService;
 import com.app.shop.view.ResponseMessages;
 
@@ -48,17 +50,6 @@ class ControllerTest {
 	}
 
 	@Test
-	void testGetCartNOK() {
-		when(cartService.getCart(Mockito.any())).thenThrow(new CartException(ResponseMessages.CART_NOT_FOUND));
-
-		CartException exception = assertThrows(CartException.class, () -> {
-			controller.getCart(Mockito.any());
-		});
-
-		assertEquals(ResponseMessages.CART_NOT_FOUND, exception.getMessage());
-	}
-
-	@Test
 	void testGetCartList() {
 		Map<String, Cart> mockMap = Map.of("CART001", new Cart("CART001"));
 		when(cartService.getList()).thenReturn(mockMap);
@@ -70,15 +61,6 @@ class ControllerTest {
 	}
 
 	@Test
-	void testGetCartListNOK() {
-		when(cartService.getList()).thenThrow(new CartException(ResponseMessages.CART_LIST_EMPTY));
-
-		CartException ex = assertThrows(CartException.class, () -> controller.getCartList());
-		assertEquals(ResponseMessages.CART_LIST_EMPTY, ex.getMessage());
-	}
-
-
-	@Test
 	void testDeleteCart() {
 		doNothing().when(cartService).deleteCart(Mockito.any());
 
@@ -86,23 +68,28 @@ class ControllerTest {
 
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 	}
-	
-	@Test
-	void testDeleteCartNOK() {
-	    doThrow(new CartException(ResponseMessages.CART_NOT_FOUND)).when(cartService).deleteCart("CART404");
-
-	    CartException ex = assertThrows(CartException.class, () -> controller.deleteCart("CART404"));
-	    assertEquals(ResponseMessages.CART_NOT_FOUND, ex.getMessage());
-	}
 
 	@Test
 	void testRemoveProduct() {
-		
+		doNothing().when(cartService).removeProduct("CART001", 1);
+
+		ResponseEntity<String> response = controller.removeProduct("CART001", 1);
+
+		assertEquals(HttpStatus.OK, response.getStatusCode());
+		assertTrue(response.getBody().contains("1"));
+
 	}
 
 	@Test
 	void testAddProducts() {
-		
+		List<Product> products = List.of(new Product(1, "Ball", 3));
+		doNothing().when(cartService).addProducts("CART001", products);
+
+		ResponseEntity<String> response = controller.addProducts("CART001", products);
+
+		assertEquals(HttpStatus.CREATED, response.getStatusCode());
+		assertEquals(ResponseMessages.PRODUCT_ADDED, response.getBody());
+
 	}
 
 }

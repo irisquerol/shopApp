@@ -26,59 +26,35 @@ public class Controller {
 	@Autowired
 	private CartService cartService;
 
-	/**
-	 * @return
-	 */
 	@PostMapping("/new")
 	public ResponseEntity<String> createCart() {
 		Cart cart = cartService.createCart();
 		return ResponseEntity.status(HttpStatus.CREATED).body(ResponseMessages.CART_CREATED + cart.getId());
 	}
 
-	/**
-	 * @param id
-	 * @return
-	 */
 	@GetMapping("/{id}")
 	public ResponseEntity<Cart> getCart(@PathVariable String id) {
 		return ResponseEntity.ok(cartService.getCart(id));
 	}
 
-	/**
-	 * @return
-	 */
 	@GetMapping("/list")
 	public ResponseEntity<Map<String, Cart>> getCartList() {
 		return ResponseEntity.ok(cartService.getList());
 	}
 
-	/**
-	 * @param id
-	 * @return
-	 */
 	@DeleteMapping("/{id}")
 	public ResponseEntity<String> deleteCart(@PathVariable String id) {
 		cartService.deleteCart(id);
 		return ResponseEntity.ok(id + ResponseMessages.CART_DELETED);
 	}
 
-	/**
-	 * @param cartId
-	 * @param productId
-	 * @return
-	 */
-	@PostMapping("/{cartId}/{productId}")
+	@DeleteMapping("/{cartId}/{productId}")
 	public ResponseEntity<String> removeProduct(@PathVariable String cartId, @PathVariable int productId) {
 		cartService.removeProduct(cartId, productId);
 		return ResponseEntity.ok(productId + ResponseMessages.PRODUCT_REMOVED);
 
 	}
 
-	/**
-	 * @param cartId
-	 * @param productId
-	 * @return
-	 */
 	@PostMapping("/{id}/addProducts")
 	public ResponseEntity<String> addProducts(@PathVariable String id, @RequestBody List<Product> products) {
 		cartService.addProducts(id, products);

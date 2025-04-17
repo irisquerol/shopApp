@@ -2,6 +2,8 @@ package com.app.shop.services;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -87,8 +89,8 @@ public class CartService {
 	public void addProducts(String cartId, List<Product> products) {
 		Cart cart = getCart(cartId);
 
-		Set<Integer> newProductIds = cart.getProductIds();
-		List<Product> newProducts = cart.getProducts();
+		Set<Integer> newProductIds = new HashSet<>(cart.getProductIds());
+		List<Product> newProducts = new ArrayList<>(cart.getProducts());
 
 		// Validation of each new register of product
 		for (Product product : products) {
@@ -107,7 +109,8 @@ public class CartService {
 			newProducts.add(product);
 
 		}
-		// After validation, adds all the products and ID to the cart and keeps the cart active
+		// After validation, adds all the products and ID to the cart and keeps the cart
+		// active
 		cart.setProductIds(newProductIds);
 		cart.setProducts(newProducts);
 		cart.setStartTime(LocalDateTime.now());
@@ -138,10 +141,10 @@ public class CartService {
 	}
 
 	/**
-	 * Thread called every 60 seconds Deletes the cart entry if it has more than 10
-	 * minutes
+	 * Thread called every 60 seconds 
+	 * Deletes the cart entry if it has more than 10 minutes
 	 */
-	@Scheduled(fixedRate = 60000)
+	@Scheduled(fixedRate = 30000)
 	public void removeInactiveCarts() {
 		LocalDateTime now = LocalDateTime.now();
 		cartStorage.entrySet()

@@ -2,7 +2,6 @@ package com.app.shop.controller;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
 import java.util.List;

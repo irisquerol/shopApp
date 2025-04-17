@@ -8,6 +8,7 @@ import java.util.Map;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 import com.app.shop.exceptions.CartException;
 import com.app.shop.model.Cart;
@@ -72,7 +73,7 @@ class CartServiceTest {
 	@Test
 	void testDeleteCartNOK() {
 		CartException ex = assertThrows(CartException.class, () -> {
-			cartService.deleteCart("CART001");
+			cartService.deleteCart(Mockito.any());
 		});
 		assertEquals(ResponseMessages.CART_NOT_FOUND, ex.getMessage());
 

@@ -1,0 +1,495 @@
+{
+	"info": {
+		"_postman_id": "21b5b157-ffcf-4dc8-bad9-1f7d92e86f12",
+		"name": "ShopAppTest",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "3414741"
+	},
+	"item": [
+		{
+			"name": "201-NewCart",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"body = pm.response.text();\r",
+							"pm.response.to.have.status(201);\r",
+							"pm.expect(body).to.include(\"Cart created successfully with ID:\");"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/cart/new",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"cart",
+						"new"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "451-DUPLICATED_ID-AddProducts",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"body = pm.response.text();\r",
+							"pm.response.to.have.status(451);\r",
+							"pm.expect(body).to.include(\"Product ID is duplicated.\");\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "[\r\n    {\r\n        \"id\": 101,\r\n        \"description\": \"bread\",\r\n        \"amount\": 2\r\n    },\r\n    {\r\n        \"id\": 97,\r\n        \"description\": \"orange juice\",\r\n        \"amount\": 4\r\n    },\r\n     {\r\n        \"id\": 97,\r\n        \"description\": \"apple juice\",\r\n        \"amount\": 4\r\n    }\r\n]",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/cart/CART001/addProducts",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"cart",
+						"CART001",
+						"addProducts"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "451-INVALID_ID-AddProducts",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"body = pm.response.text();\r",
+							"pm.response.to.have.status(451);\r",
+							"pm.expect(body).to.include(\"Invalid product id: must be greater than 0.\");\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "[\r\n    {\r\n        \"id\": 101,\r\n        \"description\": \"bread\",\r\n        \"amount\": 2\r\n    },\r\n    {\r\n        \"id\": 97,\r\n        \"description\": \"orange juice\",\r\n        \"amount\": 4\r\n    },\r\n     {\r\n        \"id\": -96,\r\n        \"description\": \"apple juice\",\r\n        \"amount\": 4\r\n    }\r\n]",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/cart/CART001/addProducts",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"cart",
+						"CART001",
+						"addProducts"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "451-INVALID_AMOUNT-AddProducts",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"body = pm.response.text();\r",
+							"pm.response.to.have.status(451);\r",
+							"pm.expect(body).to.include(\"Invalid product amount: must be greater than 0.\");\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "[\r\n    {\r\n        \"id\": 1,\r\n        \"description\": \"bread\",\r\n        \"amount\": 2\r\n    },\r\n    {\r\n        \"id\": 2,\r\n        \"description\": \"orange juice\",\r\n        \"amount\": 4\r\n    },\r\n     {\r\n        \"id\": 3,\r\n        \"description\": \"apple juice\",\r\n        \"amount\": -4\r\n    }\r\n]",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/cart/CART001/addProducts",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"cart",
+						"CART001",
+						"addProducts"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "201-AddProducts",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"body = pm.response.text();\r",
+							"pm.response.to.have.status(201);\r",
+							"pm.expect(body).to.include(\"Product(s) added successfully.\");"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "[\r\n    {\r\n        \"id\": 101,\r\n        \"description\": \"Helmet\",\r\n        \"amount\": 2\r\n    },\r\n    {\r\n        \"id\": 102,\r\n        \"description\": \"Ball\",\r\n        \"amount\": 4\r\n    },\r\n     {\r\n        \"id\": 103,\r\n        \"description\": \"Scooter\",\r\n        \"amount\": 1\r\n    }\r\n]",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/cart/CART001/addProducts",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"cart",
+						"CART001",
+						"addProducts"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "200-GetCart",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"body = pm.response.text();\r",
+							"pm.response.to.have.status(200);\r",
+							"pm.expect(body).to.include(\"CART001\");"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/cart/CART001",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"cart",
+						"CART001"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "200-ShowCartList",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							" pm.response.to.have.status(200);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/cart/list",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"cart",
+						"list"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "451-NOT_FOUND-GetCart",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"body = pm.response.text();\r",
+							"pm.response.to.have.status(451);\r",
+							"pm.expect(body).to.include(\"Cart ID not found.\");"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/cart/CART000",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"cart",
+						"CART000"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "200-RemoveProduct",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"body = pm.response.text();\r",
+							"pm.response.to.have.status(200);\r",
+							"pm.expect(body).to.include(\"Product removed successfully\");"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/cart/CART001/101",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"cart",
+						"CART001",
+						"101"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "451-RemoveProduct",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"body = pm.response.text();\r",
+							"pm.response.to.have.status(451);\r",
+							"pm.expect(body).to.include(\"Product ID not found.\");"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/cart/CART001/000",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"cart",
+						"CART001",
+						"000"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "200-RemoveCart",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"body = pm.response.text();\r",
+							"pm.response.to.have.status(200);\r",
+							"pm.expect(body).to.include(\"CART001 deleted successfully.\");"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/cart/CART001",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"cart",
+						"CART001"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "451-RemoveCart",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"body = pm.response.text();\r",
+							"pm.response.to.have.status(451);\r",
+							"pm.expect(body).to.include(\"Cart ID not found.\");"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/cart/CART001",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"cart",
+						"CART001"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "451-ShowCartList",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"body = pm.response.text();\r",
+							"pm.response.to.have.status(451);\r",
+							"pm.expect(body).to.include(\"The list of Carts is empty.\");"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/cart/list",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"cart",
+						"list"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

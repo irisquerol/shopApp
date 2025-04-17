@@ -22,9 +22,9 @@ import com.app.shop.services.CartService;
 import com.app.shop.view.ResponseMessages;
 
 @ExtendWith(MockitoExtension.class)
-class ControllerTest {
+class CartControllerTest {
 	@InjectMocks
-	private Controller controller;
+	private CartController controller;
 
 	@Mock
 	private CartService cartService;

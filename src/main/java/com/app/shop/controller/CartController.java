@@ -21,7 +21,7 @@ import com.app.shop.view.ResponseMessages;
 
 @RestController
 @RequestMapping("/cart")
-public class Controller {
+public class CartController {
 
 	@Autowired
 	private CartService cartService;

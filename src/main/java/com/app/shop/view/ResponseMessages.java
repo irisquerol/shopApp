@@ -5,7 +5,7 @@ public class ResponseMessages {
 	public static final String CART_NOT_FOUND = "Cart ID not found.";
 	public static final String CART_NOT_CREATED = "Cart could not be created properly.";
 	public static final String CART_DELETED = " deleted successfully.";
-	public static final String CART_LIST_EMPTY = "The list of Carts is empty";
+	public static final String CART_LIST_EMPTY = "The list of Carts is empty.";
 
 	public static final String PRODUCT_ADDED = "Product(s) added successfully.";
 	public static final String PRODUCT_REMOVED = "Product added successfully.";

@@ -27,7 +27,7 @@ public class CartService {
 	/*
 	 * Creates a new Cart
 	 * 
-	 * @return Cart
+	 * @return Cart to get the idCart
 	 */
 	public Cart createCart() {
 		if (cartStorage.isEmpty()) {
@@ -72,7 +72,6 @@ public class CartService {
 	 * 
 	 * @param id of the cart
 	 * @throws CartException if validation fails
-	 * @param id
 	 */
 	public void deleteCart(String id) {
 		getCart(id);
@@ -109,8 +108,7 @@ public class CartService {
 			newProducts.add(product);
 
 		}
-		// After validation, adds all the products and ID to the cart and keeps the cart
-		// active
+		// After validation, adds all the products and ID to the cart and keeps the cart active
 		cart.setProductIds(newProductIds);
 		cart.setProducts(newProducts);
 		cart.setStartTime(LocalDateTime.now());
